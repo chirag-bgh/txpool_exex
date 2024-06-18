@@ -26,9 +26,6 @@ async fn txpool_exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> ey
         };
 
         if let Some(committed_chain) = notification.committed_chain() {
-            ctx.events
-                .send(ExExEvent::FinishedHeight(committed_chain.tip().number))?;
-
             let tx_pool = ctx.components.pool();
             let mut best_txs = tx_pool.best_transactions();
 
@@ -71,6 +68,9 @@ async fn txpool_exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> ey
                         }
                     }
                 };
+
+                ctx.events
+                    .send(ExExEvent::FinishedHeight(committed_chain.tip().number))?;
 
                 println!(
                     "Transaction {:?}: used gas {}, success: {}",
